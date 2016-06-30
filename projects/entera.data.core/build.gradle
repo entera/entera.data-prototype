@@ -1,0 +1,87 @@
+//-------------------------------------------------------------------------------------------------
+// PLUGINS.
+//-------------------------------------------------------------------------------------------------
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${project.ext.kotlinVersion}"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:${project.ext.dokkaVersion}"
+    }
+}
+
+apply(plugin: "kotlin")
+apply(plugin: "org.jetbrains.dokka")
+
+//-------------------------------------------------------------------------------------------------
+// REPOSITORIES.
+//-------------------------------------------------------------------------------------------------
+
+repositories {
+    // use local maven repository.
+    if (project.hasProperty("maven.local")) {
+        mavenLocal()
+    }
+
+    // repository for geotools (this must be before other remote repositories).
+    maven { name "osgeo.org"; url "http://download.osgeo.org/webdav/geotools/" }
+
+    // central repositories that host most dependencies.
+    jcenter()
+    mavenCentral()
+}
+
+//-------------------------------------------------------------------------------------------------
+// DEPENDENCIES.
+//-------------------------------------------------------------------------------------------------
+
+// main source dependencies.
+dependencies {
+    // kotlin standard library.
+    compile "org.jetbrains.kotlin:kotlin-stdlib:${project.ext.kotlinVersion}"
+    compile "org.jetbrains.kotlin:kotlin-reflect:${project.ext.kotlinVersion}"
+
+    // geotools library and extensions.
+    compile "org.geotools:gt-main:${project.ext.geotoolsVersion}"
+    compile "org.geotools:gt-data:${project.ext.geotoolsVersion}"
+    compile "org.geotools:gt-shapefile:${project.ext.geotoolsVersion}"
+    compile "org.geotools:gt-geojson:${project.ext.geotoolsVersion}"
+
+    // rx reactive extensions.
+    compile "io.reactivex:rxjava:1.1.6"
+
+    // javafx libraries.
+    compile "no.tornado:tornadofx:1.5.1"
+
+    // apache logger.
+    compile "org.apache.logging.log4j:log4j-api:2.3"
+    compile "org.apache.logging.log4j:log4j-core:2.3"
+}
+
+// test source dependencies.
+dependencies {
+    // junit test framework.
+    testCompile "junit:junit:4.12"
+
+    // kotlin assert functions.
+    testCompile "org.jetbrains.kotlin:kotlin-test:${project.ext.kotlinVersion}"
+
+    // testfx test library.
+    testCompile "org.testfx:testfx-core:4.0.4-alpha"
+}
+
+//-------------------------------------------------------------------------------------------------
+// CONFIGURATION.
+//-------------------------------------------------------------------------------------------------
+
+dokka {
+    outputFormat = "javadoc"
+}
+
+kapt {
+    generateStubs = true
+}
+
